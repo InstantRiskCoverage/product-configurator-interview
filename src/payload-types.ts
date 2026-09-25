@@ -69,15 +69,40 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    clients: Client;
+    organizations: Organization;
+    locations: Location;
+    products: Product;
+    productOptions: ProductOption;
+    productOptionValues: ProductOptionValue;
+    skus: Skus;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    products: {
+      options: 'productOptions';
+      skus: 'skus';
+    };
+    productOptions: {
+      values: 'productOptionValues';
+    };
+    productOptionValues: {
+      skus: 'skus';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    clients: ClientsSelect<false> | ClientsSelect<true>;
+    organizations: OrganizationsSelect<false> | OrganizationsSelect<true>;
+    locations: LocationsSelect<false> | LocationsSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    productOptions: ProductOptionsSelect<false> | ProductOptionsSelect<true>;
+    productOptionValues: ProductOptionValuesSelect<false> | ProductOptionValuesSelect<true>;
+    skus: SkusSelect<false> | SkusSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -164,6 +189,127 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "clients".
+ */
+export interface Client {
+  id: number;
+  status: 'draft' | 'active' | 'archived';
+  handle: string;
+  title: string;
+  legal_name: string;
+  legal_address: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizations".
+ */
+export interface Organization {
+  id: number;
+  status: 'draft' | 'active' | 'archived';
+  handle: string;
+  title: string;
+  client: number | Client;
+  legal_name: string;
+  legal_address: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations".
+ */
+export interface Location {
+  id: number;
+  title: string;
+  status: 'draft' | 'active' | 'archived';
+  organization: number | Organization;
+  address: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  handle: string;
+  title: string;
+  status: 'draft' | 'active' | 'archived';
+  attributes:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  options?: {
+    docs?: (number | ProductOption)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  skus?: {
+    docs?: (number | Skus)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productOptions".
+ */
+export interface ProductOption {
+  id: number;
+  handle: string;
+  title: string;
+  status: 'draft' | 'active' | 'archived';
+  product: number | Product;
+  values?: {
+    docs?: (number | ProductOptionValue)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productOptionValues".
+ */
+export interface ProductOptionValue {
+  id: number;
+  title: string;
+  status: 'draft' | 'active' | 'archived';
+  handle: string;
+  productOption: number | ProductOption;
+  skus?: {
+    docs?: (number | Skus)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "skus".
+ */
+export interface Skus {
+  id: number;
+  handle: string;
+  product: number | Product;
+  productOptionValues?: (number | ProductOptionValue)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -193,6 +339,34 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'clients';
+        value: number | Client;
+      } | null)
+    | ({
+        relationTo: 'organizations';
+        value: number | Organization;
+      } | null)
+    | ({
+        relationTo: 'locations';
+        value: number | Location;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'productOptions';
+        value: number | ProductOption;
+      } | null)
+    | ({
+        relationTo: 'productOptionValues';
+        value: number | ProductOptionValue;
+      } | null)
+    | ({
+        relationTo: 'skus';
+        value: number | Skus;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -276,6 +450,96 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "clients_select".
+ */
+export interface ClientsSelect<T extends boolean = true> {
+  status?: T;
+  handle?: T;
+  title?: T;
+  legal_name?: T;
+  legal_address?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizations_select".
+ */
+export interface OrganizationsSelect<T extends boolean = true> {
+  status?: T;
+  handle?: T;
+  title?: T;
+  client?: T;
+  legal_name?: T;
+  legal_address?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations_select".
+ */
+export interface LocationsSelect<T extends boolean = true> {
+  title?: T;
+  status?: T;
+  organization?: T;
+  address?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  handle?: T;
+  title?: T;
+  status?: T;
+  attributes?: T;
+  options?: T;
+  skus?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productOptions_select".
+ */
+export interface ProductOptionsSelect<T extends boolean = true> {
+  handle?: T;
+  title?: T;
+  status?: T;
+  product?: T;
+  values?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productOptionValues_select".
+ */
+export interface ProductOptionValuesSelect<T extends boolean = true> {
+  title?: T;
+  status?: T;
+  handle?: T;
+  productOption?: T;
+  skus?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "skus_select".
+ */
+export interface SkusSelect<T extends boolean = true> {
+  handle?: T;
+  product?: T;
+  productOptionValues?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
