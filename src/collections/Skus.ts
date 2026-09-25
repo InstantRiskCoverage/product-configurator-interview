@@ -1,5 +1,4 @@
-import type { CollectionConfig, Field } from "payload";
-import { handleField } from "./common";
+import type { CollectionConfig } from "payload";
 
 export const Skus: CollectionConfig = {
 	slug: "skus",
@@ -8,7 +7,6 @@ export const Skus: CollectionConfig = {
 		singular: "SKU",
 	},
 	fields: [
-		handleField,
 		{
 			name: "product",
 			type: "relationship",

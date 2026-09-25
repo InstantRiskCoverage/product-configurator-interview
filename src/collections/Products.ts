@@ -4,7 +4,7 @@ import { generalStatusField, handleField, titleField } from "./common";
 export const Products: CollectionConfig = {
 	slug: "products",
 	admin: {
-		useAsTitle: "handle",
+		useAsTitle: "title",
 	},
 	fields: [
 		handleField,
@@ -14,6 +14,7 @@ export const Products: CollectionConfig = {
 			name: "attributes",
 			type: "json",
 			required: true,
+			defaultValue: {},
 			validate: (_val) => {
 				return true;
 			},

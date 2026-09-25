@@ -18,16 +18,10 @@ export const Organizations: CollectionConfig = {
 			required: true,
 		},
 		{
-			name: "legal_name",
-			label: "Legal Name of Organization",
-			type: "text",
-			required: true,
-		},
-		{
-			name: "legal_address",
-			label: "Legal Address of Organization",
-			type: "text",
-			required: true,
+			name: "locations",
+			type: "join",
+			collection: "locations",
+			on: "organization",
 		},
 	],
 };

@@ -82,6 +82,12 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
+    clients: {
+      organizations: 'organizations';
+    };
+    organizations: {
+      locations: 'locations';
+    };
     products: {
       options: 'productOptions';
       skus: 'skus';
@@ -197,11 +203,16 @@ export interface Media {
  */
 export interface Client {
   id: number;
-  status: 'draft' | 'active' | 'archived';
-  handle: string;
   title: string;
+  handle: string;
+  status: 'draft' | 'active' | 'archived';
   legal_name: string;
   legal_address: string;
+  organizations?: {
+    docs?: (number | Organization)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -215,8 +226,11 @@ export interface Organization {
   handle: string;
   title: string;
   client: number | Client;
-  legal_name: string;
-  legal_address: string;
+  locations?: {
+    docs?: (number | Location)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -306,7 +320,6 @@ export interface ProductOptionValue {
  */
 export interface Skus {
   id: number;
-  handle: string;
   product: number | Product;
   productOptionValues?: (number | ProductOptionValue)[] | null;
   updatedAt: string;
@@ -464,11 +477,12 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "clients_select".
  */
 export interface ClientsSelect<T extends boolean = true> {
-  status?: T;
-  handle?: T;
   title?: T;
+  handle?: T;
+  status?: T;
   legal_name?: T;
   legal_address?: T;
+  organizations?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -481,8 +495,7 @@ export interface OrganizationsSelect<T extends boolean = true> {
   handle?: T;
   title?: T;
   client?: T;
-  legal_name?: T;
-  legal_address?: T;
+  locations?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -543,7 +556,6 @@ export interface ProductOptionValuesSelect<T extends boolean = true> {
  * via the `definition` "skus_select".
  */
 export interface SkusSelect<T extends boolean = true> {
-  handle?: T;
   product?: T;
   productOptionValues?: T;
   updatedAt?: T;
